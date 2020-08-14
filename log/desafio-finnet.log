@@ -1,2 +1,5 @@
 [2020-08-14T07:48:16.845852-03:00] desafio-finnet.INFO: Request Log / [] []
 [2020-08-14T07:52:26.385256-03:00] desafio-finnet.INFO: Request Log / [] []
+[2020-08-14T15:20:20.300665+02:00] desafio-finnet.INFO: Company Created! {"id":null,"name":"Finnet","password":"1234"} []
+[2020-08-14T16:29:56.451643+02:00] desafio-finnet.INFO: Company Created! {"id":null,"name":"Finnet","password":"1234"} []
+[2020-08-14T16:30:09.035443+02:00] desafio-finnet.INFO: Company Created! {"id":null,"name":"finnet","password":"1234"} []

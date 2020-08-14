@@ -6,26 +6,19 @@
 $app->group('/v1', function() {
 
     /**
-     * Dentro de v1, o recurso /
+     * Dentro de v1, registrar um novo login de empresa
      */
-    $this->group('/', function() {
-        $this->get('', function (Request $request, Response $response) use ($app) {
-            $logger = $this->get('logger');
-            $logger->info('Request Log /');
-
-            $data = [
-                "msg" => "Desafio Finnet"
-            ];
-            $return = $response->withJson($data, 200)
-                ->withHeader('Content-type', 'application/json');
-            return $return;
-        });
+    $this->group('/company', function(){
+        $this->post('', 'App\v1\Controllers\CompanyController:createCompany');
+        
+        //Validando se tem um integer no final da URL
+        $this->get('/{id:[0-9]+}/', 'App\v1\Controllers\CompanyController:viewCompany');
     });
 
     /**
-     * Dentro de v1, o recurso /auth
+     * Dentro de v1, login
      */
-    $this->group('/auth', function() {
-        $this->get('', \App\v1\Controllers\AuthController::class);
+    $this->group('/login', function() {
+        $this->post('', \App\v1\Controllers\AuthController::class);
     });
 });
