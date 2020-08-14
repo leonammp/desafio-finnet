@@ -13,19 +13,19 @@ class Company {
      * @Id @Column(type="integer") 
      * @GeneratedValue
      */
-    protected $id;
+    public $id;
 
     /**
      * @var string
      * @Column(type="string") 
      */
-    protected $name;
+    public $name;
 
     /**
      * @var string
      * @Column(type="string") 
      */
-    protected $password;
+    public $password;
 
 
     public function getId(){

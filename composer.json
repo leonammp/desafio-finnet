@@ -1,7 +1,9 @@
 {
   "require": {
     "slim/slim": "3.*",
-    "doctrine/orm": "^2.7"
+    "doctrine/orm": "^2.7",
+    "oscarotero/psr7-middlewares": "^3.21",
+    "monolog/monolog": "^2.1"
   },
   "autoload": {
     "psr-4": {

@@ -13,13 +13,13 @@ class Client {
      * @Id @Column(type="integer") 
      * @GeneratedValue
      */
-    protected $id;
+    public $id;
 
     /**
      * @var string
      * @Column(type="string") 
      */
-    protected $cpf_cpnj;
+    public $cpf_cpnj;
 
 
     public function getId(){

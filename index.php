@@ -10,8 +10,15 @@ require "bootstrap.php";
  * @var string
  */
 $app->get('/', function (Request $request, Response $response) use ($app) {
-    $response->getBody()->write("Desafio Finnet!");
-    return $response;
+    $logger = $this->get('logger');
+    $logger->info('Request Log /');
+
+    $data = [
+        "msg" => "Desafio Finnet"
+    ];
+    $return = $response->withJson($data, 200)
+        ->withHeader('Content-type', 'application/json');
+    return $return;
 });
 
 
