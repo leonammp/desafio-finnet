@@ -5,6 +5,8 @@ require './vendor/autoload.php';
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use Psr7Middlewares\Middleware\TrailingSlash;
+use Monolog\Logger;
+use Firebase\JWT\JWT;
 
 
 /**
@@ -100,6 +102,11 @@ $container['logger'] = function($container) {
     return $logger;
 };
 
+/**
+ * Token do nosso JWT
+ */
+$container['secretkey'] = "askjdfnQQWPDamdnoprodmvb";
+
 $app = new \Slim\App($container);   
 
 /**
@@ -108,3 +115,22 @@ $app = new \Slim\App($container);
  * false - Remove a / no final da URL
  */
 $app->add(new TrailingSlash(false));
+
+/**
+ * Auth básica do JWT
+ * Whitelist - Bloqueia tudo, e só libera os
+ * itens dentro do "passthrough"
+ */
+$app->add(new Tuupola\Middleware\JwtAuthentication([
+    "regexp" => "/(.*)/", //Regex para encontrar o Token nos Headers
+    "header" => "X-Token", //O Header que vai conter o token
+    "path" => "/", //Cobrir toda a API a partir do /
+    "ignore" => ["/auth"], //Adicionar a exceção de cobertura a rota /auth
+    "realm" => "Protected", 
+    "secret" => $container['secretkey'], //Nosso secretkey criado
+    "error" => function ($response, $arguments) {
+        $data["msg"] = $arguments["message"];
+        return $response->withJson($data, 401)
+            ->withHeader("Content-Type", "application/json");
+    }
+]));

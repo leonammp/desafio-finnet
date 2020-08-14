@@ -3,7 +3,9 @@
     "slim/slim": "3.*",
     "doctrine/orm": "^2.7",
     "oscarotero/psr7-middlewares": "^3.21",
-    "monolog/monolog": "^2.1"
+    "monolog/monolog": "^2.1",
+    "firebase/php-jwt": "^5.2",
+    "tuupola/slim-jwt-auth": "^3.4"
   },
   "autoload": {
     "psr-4": {
