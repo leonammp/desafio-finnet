@@ -2,9 +2,8 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-require './vendor/autoload.php';
-
-$app = new \Slim\App;
+// Incluindo o arquivo de configuração de dependências e autoload
+require "bootstrap.php";
 
 /**
  * Instalação do Slim
