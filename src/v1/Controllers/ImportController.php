@@ -93,11 +93,11 @@ class ImportController {
             // Remover Header do CSV
             array_shift($csvFile);
             
-            foreach ($csvFile as $key => $row) {
+            foreach ($csvFile as $row) {
                 //Inserir cliente no banco de dados
-                $client_id = $this->insertClientInDB($row);
+                $client = $this->insertClientInDB($row);
                 //Inserir fatura no banco de dados
-                $this->insertInvoiceInDB($row, $client_id);
+                $this->insertInvoiceInDB($row, $client);
             }
 
             $return = true;
@@ -114,8 +114,10 @@ class ImportController {
      * @return void
      */
     public function insertClientInDB($row){
+        
         $entityManager = $this->container->get('em');
         $clientsRepository = $entityManager->getRepository('App\Models\Entity\Client');
+        
         //Defini os campos do cliente
         $cpf_cnpj = $row[$this->clientFields['cpf_cnpj']];
         $name = $row[$this->clientFields['name']];

@@ -24,4 +24,7 @@ $app->group('/v1', function() {
     //visualizar Faturas
     $this->get('/invoices', 'App\v1\Controllers\CompanyController:viewInvoices');
 
+    //enviar email de notificação
+    $this->get('/sendEmails', 'App\v1\Controllers\CompanyController:sendEmailNotification');
+
 });

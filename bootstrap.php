@@ -104,9 +104,8 @@ $container['logger'] = function($container) {
  * Serviço de EMAIL
  */
 $container['smtp'] = [
-    'type' => 'smtp',
     'host' => 'smtp.mailtrap.io',
-    'port' => '25',
+    'port' => '2525',
     'username' => 'eae8ae766b08cd',
     'password' => '29cb50c79d9850',
 ];

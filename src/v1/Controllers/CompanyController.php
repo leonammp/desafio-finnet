@@ -9,6 +9,8 @@ use App\Models\Entity\Company;
 use App\Models\Entity\Invoice;
 use App\Models\Entity\Client;
 
+use App\v1\Controllers\MailController;
+
 /**
  * Controller v1 de Empresas
  */
@@ -100,6 +102,55 @@ class CompanyController {
      */
     public function viewInvoices($request, $response, $args) {
 
+        $clientsAndInvoices = $this->generateClientsAndInvoices();
+
+        //Registra a consulta feita
+        $logger = $this->container->get('logger');
+        $logger->info('Invoices Checked!');
+
+        $data['msg'] = 'success';
+        $data['data'] = $clientsAndInvoices;
+
+        $return = $response->withJson($data, 200)
+            ->withHeader('Content-type', 'application/json');
+        return $return;
+    }
+
+    /**
+     * Envia o email de aviso das faturas para os clientes 
+     * @param [type] $request
+     * @param [type] $response
+     * @param [type] $args
+     * @return Response
+     */
+    public function sendEmailNotification($request, $response, $args) {
+
+        $clientsAndInvoices = $this->generateClientsAndInvoices();
+
+        $smpt = (new MailController($this->container))
+            ->sendEmail('Olá', 'Suas faturas estão prontas para serem pagas!', 'ludmila@teste.com', 'Ludmila');
+        
+        var_dump($smpt);
+        exit;
+
+        //Registra a consulta feita
+        $logger = $this->container->get('logger');
+        $logger->info('Notification emails sent!');
+
+        $data['msg'] = 'success';
+
+        $return = $response->withJson($data, 200)
+            ->withHeader('Content-type', 'application/json');
+        return $return;
+    }
+
+
+    /**
+     * Gera um dicionario com os clietes e suas faturas 
+     * @return array
+     */
+    public function generateClientsAndInvoices(){
+
         $entityManager = $this->container->get('em');
         $clientsRepository = $entityManager->getRepository('App\Models\Entity\Client');
         $invoicesRepository = $entityManager->getRepository('App\Models\Entity\Invoice');
@@ -127,15 +178,7 @@ class CompanyController {
             array_push($return[$client_name], $invoice_values);
         }
 
-        //Registra a consulta feita
-        $logger = $this->container->get('logger');
-        $logger->info('Invoices Checked!');
-
-        $data['msg'] = 'success';
-        $data['data'] = $return;
-
-        $return = $response->withJson($data, 200)
-            ->withHeader('Content-type', 'application/json');
         return $return;
     }
+        
 }

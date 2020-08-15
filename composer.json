@@ -5,7 +5,8 @@
     "oscarotero/psr7-middlewares": "^3.21",
     "monolog/monolog": "^2.1",
     "firebase/php-jwt": "^5.2",
-    "tuupola/slim-jwt-auth": "^3.4"
+    "tuupola/slim-jwt-auth": "^3.4",
+    "phpmailer/phpmailer": "^6.1"
   },
   "autoload": {
     "psr-4": {
