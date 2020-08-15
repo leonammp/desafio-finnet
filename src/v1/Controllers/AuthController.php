@@ -14,8 +14,8 @@ use App\Models\Entity\Company;
 class AuthController {
 
     /**
-     * Container
-     * @var object s
+     * Container Class
+     * @var [object]
      */
    protected $container;
    

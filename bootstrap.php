@@ -103,6 +103,17 @@ $container['logger'] = function($container) {
 };
 
 /**
+ * Serviço de EMAIL
+ */
+$container['smtp'] = [
+    'type' => 'smtp',
+    'host' => 'smtp.mailtrap.io',
+    'port' => '25',
+    'username' => 'eae8ae766b08cd',
+    'password' => '29cb50c79d9850',
+];
+
+/**
  * Token do nosso JWT
  */
 $container['secretkey'] = "askjdfnQQWPDamdnoprodmvb";
@@ -125,7 +136,7 @@ $app->add(new Tuupola\Middleware\JwtAuthentication([
     "regexp" => "/(.*)/", //Regex para encontrar o Token nos Headers
     "header" => "X-Token", //O Header que vai conter o token
     "path" => "/", //Cobrir toda a API a partir do /
-    "ignore" => ["/v1/login", "/v1/company"], //Adicionar a exceção de cobertura a rota /auth
+    "ignore" => ["/v1/login", "/v1/company", "/v1/importCSV"], //Adicionar a exceção de cobertura a rota /auth
     "realm" => "Protected", 
     "secret" => $container['secretkey'], //Nosso secretkey criado
     "error" => function ($response, $arguments) {
