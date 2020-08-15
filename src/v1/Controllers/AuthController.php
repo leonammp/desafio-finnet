@@ -36,15 +36,13 @@ class AuthController {
     */
    public function __invoke(Request $request, Response $response, $args) {
 
-    /**
-     * Validar se a empresa existe
-    */
     $entityManager = $this->container->get('em');
     $companiesRepository = $entityManager->getRepository('App\Models\Entity\Company');
 
+    //Validar se a empresa existe
     $companyName = $request->getParam('name');
     $companyPassword =  $request->getParam('password');
-
+    
     $company = $companiesRepository->findOneBy(['name' => $companyName, 'password' => $companyPassword]);
 
     if(!$company){
@@ -52,14 +50,12 @@ class AuthController {
         ->withHeader('Content-type', 'application/json');   
     }
 
-    /**
-     * JWT Key
-     */
+    //Gerar chave JWT
     $key = $this->container->get("secretkey");
 
     $token = array(
         "user" => $companyName,
-        "exp"   => time() + 30 * 60 // 30 min
+        "exp"   => time() + 30 * 60 // expira em 30 min
     );
 
     $jwt = JWT::encode($token, $key);

@@ -36,26 +36,27 @@ class CompanyController {
      * @return Response
      */
     public function createCompany($request, $response, $args) {
-        $params = (object) $request->getParams();
-        /**
-         * Pega o Entity Manager do Container
-         */
-        $entityManager = $this->container->get('em');
-        $company = (new Company())->setName($params->name)
-            ->setPassword($params->password);
         
-        /**
-         * Registra a criação da empresa
-         */
+        $params = (object) $request->getParams();
+        
+        //Pega o Entity Manager do Container
+        $entityManager = $this->container->get('em');
+        $company = (new Company())
+            ->setName($params->name)
+            ->setPassword($params->password);
+                
+        //Registra a criação da empresa
         $logger = $this->container->get('logger');
         $logger->info('Company Created!', $company->getValues());
 
-        /**
-         * Persiste a entidade no banco de dados
-         */
+        //Persiste a entidade no banco de dados
         $entityManager->persist($company);
         $entityManager->flush();
-        $return = $response->withJson($company, 201)
+
+        $data['msg'] = 'success';
+        $data['data'] = $company;
+
+        $return = $response->withJson($data, 201)
             ->withHeader('Content-type', 'application/json');
         return $return;       
     }
@@ -75,16 +76,17 @@ class CompanyController {
         $companiesRepository = $entityManager->getRepository('App\Models\Entity\Company');
         $company = $companiesRepository->find($id); 
 
-        /**
-         * Verifica se existe uma empresa com o ID informado
-         */
+        //Verifica se existe uma empresa com o ID informado
         if (!$company) {
             $logger = $this->container->get('logger');
             $logger->warning("Company {$id} Not Found");
             throw new \Exception("Company not Found", 404);
-        }    
+        }
 
-        $return = $response->withJson($company, 200)
+        $data['msg'] = 'success';
+        $data['data'] = $company; 
+
+        $return = $response->withJson($data, 200)
             ->withHeader('Content-type', 'application/json');
         return $return;
     }
@@ -101,26 +103,38 @@ class CompanyController {
         $entityManager = $this->container->get('em');
         $clientsRepository = $entityManager->getRepository('App\Models\Entity\Client');
         $invoicesRepository = $entityManager->getRepository('App\Models\Entity\Invoice');
-        $clients = $clientsRepository->findAll(); 
-
-        /*
-        if($clients){
-            foreach ($clients as $key => $value) {
-                
-            }
-        }
-        */
         
-        /**
-         * Verifica se existe uma empresa com o ID informado
-         */
-        // if (!$company) {
-        //     $logger = $this->container->get('logger');
-        //     $logger->warning("Company {$id} Not Found");
-        //     throw new \Exception("Company not Found", 404);
-        // }
+        $return = [];
+        
+        //Procurar todas as faturas
+        $invoices = $invoicesRepository->findAll();
+        
+        foreach ($invoices as $invoice) {
+            //Pegar nome do cliente para ser a chave do dicionario
+            $client_name = $invoice->getClientID()->getName();
+            
+            //Se não existir o cliente no return, adiciona ele
+            if (!isset($return[$client_name])) {
+                $return[$client_name] = [];
+            }
+            
+            $invoice_values = [
+                'date_due' => $invoice->getDateDue(),
+                'total' => $invoice->getTotal(),
+            ];
 
-        $return = $response->withJson($clients, 200)
+            //Adiciona a fatura ao cliente
+            array_push($return[$client_name], $invoice_values);
+        }
+
+        //Registra a consulta feita
+        $logger = $this->container->get('logger');
+        $logger->info('Invoices Checked!');
+
+        $data['msg'] = 'success';
+        $data['data'] = $return;
+
+        $return = $response->withJson($data, 200)
             ->withHeader('Content-type', 'application/json');
         return $return;
     }

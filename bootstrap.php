@@ -8,7 +8,6 @@ use Psr7Middlewares\Middleware\TrailingSlash;
 use Monolog\Logger;
 use Firebase\JWT\JWT;
 
-
 /**
  * Configurações
  */
@@ -20,7 +19,7 @@ $configs = [
 
 /**
  * Container Resources do Slim.
- * Dentro dele vamos carregar todas as dependências
+ * Para carregar todas as dependências
  */
 $container = new \Slim\Container($configs);
 
@@ -64,14 +63,13 @@ $container['notFoundHandler'] = function ($c) {
 
 
 $isDevMode = true;
-
 /**
  * Diretório de Entidades e Metadata do Doctrine
  */
 $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src/Models/Entity"), $isDevMode);
 
 /**
- * Array de configurações da nossa conexão com o banco
+ * Array de configurações da conexão com o banco
  */
 $conn = array(
     'driver' => 'pdo_sqlite',
@@ -114,7 +112,7 @@ $container['smtp'] = [
 ];
 
 /**
- * Token do nosso JWT
+ * Token JWT
  */
 $container['secretkey'] = "askjdfnQQWPDamdnoprodmvb";
 
@@ -128,9 +126,7 @@ $app = new \Slim\App($container);
 $app->add(new TrailingSlash(false));
 
 /**
- * Auth básica do JWT
- * Whitelist - Bloqueia tudo, e só libera os
- * itens dentro do "passthrough"
+ * Auth do JWT
  */
 $app->add(new Tuupola\Middleware\JwtAuthentication([
     "regexp" => "/(.*)/", //Regex para encontrar o Token nos Headers

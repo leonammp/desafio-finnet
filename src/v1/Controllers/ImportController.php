@@ -4,7 +4,6 @@ namespace App\v1\Controllers;
 
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
-use \DateTime;
 
 use App\Models\Entity\Client;
 use App\Models\Entity\Invoice;
@@ -35,13 +34,16 @@ class ImportController {
      * @param [object] $container
      */
     public function __construct($container) {
+
         $this->container = $container;
+        
         // Defini os index da tabela cliente no CSV
         $this->clientFields = [
             'cpf_cnpj' => 0,
             'name' => 1,
             'email' => 2,
         ];
+
         // Defini os index da tabela fatura no CSV
         $this->invoiceFields = [
             'date_due' => 3,
@@ -57,16 +59,20 @@ class ImportController {
      * @return Response
      */
     public function importCSV($request, $response, $args) {
+
         $logger = $this->container->get('logger');
 
+        //Extrair dados de cliente e fatura do CSV
         if($this->extractClientAndInvoiceFromCSV()){
             $data['msg'] = 'success';
             $status = 200;
+            
             //Registra a importação no log
             $logger->info('Import CSV SUCCESS');
         }else{  
             $data['msg'] = 'error';
             $status = 409;
+            
             //Registra a importação no log
             $logger->info('Import CSV ERROR');
         }
@@ -86,12 +92,14 @@ class ImportController {
             $csvFile = array_map('str_getcsv', file('./public/upload/faturas.csv'));
             // Remover Header do CSV
             array_shift($csvFile);
+            
             foreach ($csvFile as $key => $row) {
                 //Inserir cliente no banco de dados
                 $client_id = $this->insertClientInDB($row);
                 //Inserir fatura no banco de dados
                 $this->insertInvoiceInDB($row, $client_id);
             }
+
             $return = true;
         }else{
             $return = false;
@@ -127,12 +135,12 @@ class ImportController {
             $logger = $this->container->get('logger');
             $logger->info('Client Created!', $newClient->getValues());
             
-            $client_id = $newClient->getId(); 
+            $client = $newClient; 
         }else{
-            $client_id = $client->getId();
+            $client = $client;
         }
 
-        return $client_id;
+        return $client;
     }
 
     /**
@@ -140,30 +148,34 @@ class ImportController {
      * com base na variavel invoiceFields
      * @return void
      */
-    public function insertInvoiceInDB($row, $client_id){
+    public function insertInvoiceInDB($row, $client){
+        
         $entityManager = $this->container->get('em');
         $invoicesRepository = $entityManager->getRepository('App\Models\Entity\Invoice');
         $clientsRepository = $entityManager->getRepository('App\Models\Entity\Client');
+        
         //Defini os campos da fatura
         $date_due = $row[$this->invoiceFields['date_due']];
         $total = $row[$this->invoiceFields['total']];
+        
         //Valida se a fatura já está cadastrada no banco de dados
         $where = [
-            'client_id' => $client_id,
+            'client_id' => $client->getId(),
             'date_due' => $date_due,
             'total' => $total,
         ];
         $invoice = $invoicesRepository->findOneBy($where);
+        
         if (!$invoice) {
-            //Encontra o cliente da fatura como objeto entity
-            $client = $clientsRepository->find($client_id);
             $newInvoice = (new Invoice)
                 ->setClientID($client)
                 ->setDateDue($date_due)
                 ->setTotal($total);
+            
             //Persistir dados
             $entityManager->persist($newInvoice);
             $entityManager->flush();
+            
             //Registra a criação da fatura
             $logger = $this->container->get('logger');
             $logger->info('Invoice Created!', $newInvoice->getValues());
