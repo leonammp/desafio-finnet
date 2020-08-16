@@ -52,3 +52,43 @@ cd desafio-finnet
 #Instalar as dependências
 composer install
 ```
+#### Execução
+Para executar, na pasta do sistema, vamos criar um servidor php no localhost na porta 8000 com este comando:
+```bash
+php -S localhost:8000
+```
+Agora já está tudo rodando.
+
+No [Postman](https://www.postman.com/downloads/), vamos importar as rotas que iremos utilizar. Siga os passos:
+ - Clique em Import;
+ - Escolha o arquivo 'desafio-finnet.postman_collection.json' (que se encontra na pasta postman dentro do projeto);
+ - Pronto.
+ 
+#### Rotas
+No total, temos 6 rotas na aplicação. Todas elas estão na versão 1 (/v1/).
+
+Para adicionar uma empresa no banco:
+ - http://localhost:8000/v1/company (POST)
+  - {"name": "finnet", "password": 1234}
+
+Para fazer login:
+ - http://localhost:8000/v1/login (POST)
+  - {"name": "finnet", "password": 1234}
+
+Para importar o CSV (/public/upload) para o banco de dados:
+ - http://localhost:8000/v1/importCSV (GET)
+
+Para enviar os email notificando os clientes:
+ - http://localhost:8000/v1/sendEmails (GET)
+*estamos enviando apenas para os 5 primeiros clientes para não acabar a cota do MailTrap hehe ;)
+
+Para visualizar as faturas consolidadas por CPF/CNPJ dos clientes:
+ - http://localhost:8000/v1/invoices (GET)
+  - Headers
+   - {"X-Token": "< auth-jwt que você recebeu em /login >"}
+
+
+
+
+
+
