@@ -40,7 +40,23 @@ Nossas dependências:
 "tuupola/slim-jwt-auth": "^3.4",
 "phpmailer/phpmailer": "^6.1"
 ```
-### Instalação
+### Instalação com Docker
+Baixe a imagem [desafio-finnet.tar](https://drive.google.com/file/d/11LDgE98ATWZQJ41R5Llf71l7zz6UabWs/view?usp=sharing).
+Carrege a imagem com esse comando:
+```bash
+docker load -i desafio-finnet.tar
+```
+Copie o IMAGE ID da imagem carregada com o comando:
+```bash
+docker images
+```
+Cole o IMAGE ID da imagem nesse último comando:
+```bash
+docker run -d -p 8000:8000 <IMAGE ID>
+```
+Pronto.
+
+### Istalação sem Docker 
 Para instalar o sistema basta executar os seguintes comandos:
 ```bash
 #Baixar o projeto
@@ -50,16 +66,16 @@ cd desafio-finnet
 #Instalar as dependências
 composer install
 ```
-### Execução
 Para executar, na pasta do sistema, vamos criar um servidor php no localhost na porta 8000 com este comando:
 ```bash
 php -S localhost:8000
 ```
+### Postman
 Agora já está tudo rodando.
 
 No [Postman](https://www.postman.com/downloads/), vamos importar as rotas que iremos utilizar. Siga os passos:
  - Clique em Import;
- - Escolha o arquivo 'desafio-finnet.postman_collection.json' (que se encontra na pasta postman dentro do projeto);
+ - Escolha o arquivo 'desafio-finnet.postman_collection.json' que se encontra [nesse link](https://drive.google.com/file/d/1a9LFpPlamBpxXEeV_LZFm2-4S9byZgSg/view?usp=sharing);
  - Pronto.
  
 ### Rotas
