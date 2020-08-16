@@ -78,7 +78,7 @@ No total, temos 6 rotas na aplicação. Todas elas estão na versão 1 (/v1/).
 
 #### Para enviar os email notificando os clientes:
  * http://localhost:8000/v1/sendEmails (GET)
-estamos enviando apenas para os 5 primeiros clientes para não acabar a cota do MailTrap hehe ;)
+   * *estamos enviando apenas para os 5 primeiros clientes para não acabar a cota do MailTrap hehe ;)
 
 #### Para visualizar as faturas consolidadas por CPF/CNPJ dos clientes:
   * http://localhost:8000/v1/invoices (GET)
