@@ -12,8 +12,6 @@ Com base nos requisitos deste projeto, observamos que:
  - Não precisa ser uma arquitetura/framework robusto para resolver o problema.
 
 #### Desenho da solução
-
-#### Casos de Uso
 <p align="center">
   <img src="https://i.imgur.com/KE1cozf.jpg" width="500" /><br>
   (Diagrama de Casos de Uso)
@@ -35,7 +33,7 @@ Seguindo esses requisitos, iremos trabalhar com as seguintes ferramentas e tecno
  - Banco de dados SQLite
 
 Nossas dependências:
-```
+```json
 "slim/slim": "3.*",
 "doctrine/orm": "^2.7",
 "oscarotero/psr7-middlewares": "^3.21",
@@ -46,7 +44,7 @@ Nossas dependências:
 ```
 #### Instalação
 Para instalar o sistema basta executar os seguintes comandos:
-```
+```bash
 #Baixar o projeto
 git clone https://github.com/leonammp/desafio-finnet/
 cd desafio-finnet
