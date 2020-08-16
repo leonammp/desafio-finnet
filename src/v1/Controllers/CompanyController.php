@@ -30,6 +30,7 @@ class CompanyController {
         $this->container = $container;
     }
 
+
     /**
      * Cria uma empresa
      * @param [type] $request
@@ -56,12 +57,13 @@ class CompanyController {
         $entityManager->flush();
 
         $data['msg'] = 'success';
-        $data['data'] = $company;
+        $data['data'] = $company->getValues();
 
         $return = $response->withJson($data, 201)
             ->withHeader('Content-type', 'application/json');
         return $return;       
     }
+
 
     /**
      * Exibe as informações de uma empresa 
@@ -93,6 +95,7 @@ class CompanyController {
         return $return;
     }
 
+
     /**
      * Exibe as informações das faturas 
      * @param [type] $request
@@ -102,6 +105,7 @@ class CompanyController {
      */
     public function viewInvoices($request, $response, $args) {
 
+        //Pegar as informações consolidadas dos clientes e faturas
         $clientsAndInvoices = $this->generateClientsAndInvoices();
 
         //Registra a consulta feita
@@ -116,6 +120,7 @@ class CompanyController {
         return $return;
     }
 
+
     /**
      * Envia o email de aviso das faturas para os clientes 
      * @param [type] $request
@@ -125,13 +130,48 @@ class CompanyController {
      */
     public function sendEmailNotification($request, $response, $args) {
 
+        $entityManager = $this->container->get('em');
+        $clientsRepository = $entityManager->getRepository('App\Models\Entity\Client');
+        $invoicesRepository = $entityManager->getRepository('App\Models\Entity\Invoice');
+        
+        //Pegar as informações consolidadas dos clientes e faturas 
         $clientsAndInvoices = $this->generateClientsAndInvoices();
 
-        $smpt = (new MailController($this->container))
-            ->sendEmail('Olá', 'Suas faturas estão prontas para serem pagas!', 'ludmila@teste.com', 'Ludmila');
-        
-        var_dump($smpt);
-        exit;
+        //Pegar apenas os 5 primeiros clientes para não acabar a cota do MailTrap hehehe :)
+        $clientsAndInvoices = array_slice($clientsAndInvoices, 0, 5);
+
+        foreach ($clientsAndInvoices as $clientCPF_CNPJ => $clientValues) {
+            $clientName = $clientValues['info']['name'];
+            $clientEmail = $clientValues['info']['email'];
+
+            $invoicesHTML = '';
+            //Criar html das faturas
+            foreach ($clientValues['invoices'] as $key => $invoice){
+                $invoicesHTML .= "
+                    <br/> Fatura #{$key}
+                    <br/> Data de vencimento: {$invoice['date_due']} 
+                    <br/> Total da fatura: R$ {$invoice['total']}
+                    <br/>
+                ";
+            }
+            //Criar corpo do html
+            $emailBody = "
+                <html>
+                    <body>
+                        Olá, {$clientName}! <br/> <br/>
+                        Suas faturas já estão consolidadas e prontas para serem pagas! <br/>
+                        {$invoicesHTML} <br/>
+                        Atenciosamente, <br/>
+                        Finnet.
+                    </body>    
+                </html>
+            ";
+
+            //Enviar email para o cliente
+            $subject = 'Suas faturas estão prontas para serem pagas!';
+            (new MailController($this->container))
+                ->sendEmail($emailBody, $subject, $clientEmail, $clientName);
+        }
 
         //Registra a consulta feita
         $logger = $this->container->get('logger');
@@ -161,13 +201,22 @@ class CompanyController {
         $invoices = $invoicesRepository->findAll();
         
         foreach ($invoices as $invoice) {
-            //Pegar nome do cliente para ser a chave do dicionario
-            $client_name = $invoice->getClientID()->getName();
+            //Pegar cpf_cnpj do cliente para ser a chave do dicionario
+            $clientCPF_CNPJ = $invoice->getClientID()->getCPF_CNPJ();
             
             //Se não existir o cliente no return, adiciona ele
-            if (!isset($return[$client_name])) {
-                $return[$client_name] = [];
-            }
+            if (!isset($return[$clientCPF_CNPJ])) {
+                $return[$clientCPF_CNPJ] = [
+                    //Informações do cliente
+                    'info' => [
+                        'name' =>  $invoice->getClientID()->getName(),
+                        'email' =>  $invoice->getClientID()->getEmail(),
+                    ], 
+                    //Faturas do cliente
+                    'invoices' => [],
+                ];
+
+            } 
             
             $invoice_values = [
                 'date_due' => $invoice->getDateDue(),
@@ -175,10 +224,9 @@ class CompanyController {
             ];
 
             //Adiciona a fatura ao cliente
-            array_push($return[$client_name], $invoice_values);
+            array_push($return[$clientCPF_CNPJ]['invoices'], $invoice_values);
         }
 
         return $return;
     }
-        
 }

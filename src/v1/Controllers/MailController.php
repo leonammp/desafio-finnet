@@ -25,6 +25,7 @@ class MailController {
      */
     private $mail;
 
+
     /**
      * Undocumented function
      * @param [object] $container
@@ -50,6 +51,7 @@ class MailController {
         $this->mail->addReplyTo('info@mailtrap.io', 'Mailtrap');
     }
 
+    
     /**
      * Enviar email
      * @param [object] $mailContent

@@ -131,9 +131,9 @@ $app->add(new Tuupola\Middleware\JwtAuthentication([
     "regexp" => "/(.*)/", //Regex para encontrar o Token nos Headers
     "header" => "X-Token", //O Header que vai conter o token
     "path" => "/", //Cobrir toda a API a partir do /
-    "ignore" => ["/v1/login", "/v1/company", "/v1/importCSV"], //Adicionar a exceção de cobertura a rota /auth
-    "realm" => "Protected", 
+    "ignore" => ["/v1/login", "/v1/company", "/v1/importCSV", "/v1/sendEmails"], //Adicionar a exceção de cobertura 
     "secret" => $container['secretkey'], //Nosso secretkey criado
+    "secure" => false, //Não validar se é HTTPS
     "error" => function ($response, $arguments) {
         $data["msg"] = $arguments["message"];
         return $response->withJson($data, 401)

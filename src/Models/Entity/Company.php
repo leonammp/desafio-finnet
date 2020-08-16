@@ -17,7 +17,7 @@ class Company {
 
     /**
      * @var string
-     * @Column(type="string") 
+     * @Column(type="string", unique=true) 
      */
     public $name;
 
@@ -27,17 +27,26 @@ class Company {
      */
     public $password;
 
+    /**
+     * Password Salt
+     */
+    private $salt = '^Lr8uF%Xat5$';
+
 
     public function getId(){
         return $this->id;
     }
 
     public function getName(){
-        return $this->$name;
+        return $this->name;
     }
 
     public function getPassword(){
-        return $this->$password;
+        return $this->password;
+    }
+
+    public function getSalt(){
+        return $this->salt;
     }
 
     public function setName($name){
@@ -46,7 +55,7 @@ class Company {
     }
 
     public function setPassword($password){
-        $this->password = $password;
+        $this->password = sha1($password.$this->salt);
         return $this;  
     }
 
@@ -54,6 +63,10 @@ class Company {
      * @return App\Models\Entity\Company
      */
     public function getValues() {
-        return get_object_vars($this);
+        $values = get_object_vars($this);
+        //Remover password e salt
+        unset($values['password']);
+        unset($values['salt']);
+        return $values;
     }
 }

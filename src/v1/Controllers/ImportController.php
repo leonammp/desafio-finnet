@@ -29,6 +29,7 @@ class ImportController {
      */
     private $invoiceFields;
 
+
     /**
      * Undocumented function
      * @param [object] $container
@@ -50,6 +51,7 @@ class ImportController {
             'total' => 4,
         ];
     }
+
 
     /**
      * Cria uma empresa
@@ -82,6 +84,7 @@ class ImportController {
         return $return;       
     }
 
+    
     /**
      * Extrai os dados de Cliente e Fatura do CSV
      * @return void
@@ -108,6 +111,7 @@ class ImportController {
         return $return;
     }
 
+    
     /**
      * Extrai os dados de Cliente da linha do CSV
      * com base na variavel clientFields
@@ -145,6 +149,7 @@ class ImportController {
         return $client;
     }
 
+    
     /**
      * Extrai os dados de Fatura da linha do CSV
      * com base na variavel invoiceFields

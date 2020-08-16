@@ -19,6 +19,7 @@ class AuthController {
      */
    protected $container;
    
+   
    /**
     * Undocumented function
     * @param ContainerInterface $container
@@ -27,6 +28,7 @@ class AuthController {
        $this->container = $container;
    }
    
+
    /**
     * Invokable Method
     * @param Request $request
@@ -39,10 +41,13 @@ class AuthController {
     $entityManager = $this->container->get('em');
     $companiesRepository = $entityManager->getRepository('App\Models\Entity\Company');
 
+    //Pegar o salt da Company
+    $salt = (new Company())->getSalt();
+    
     //Validar se a empresa existe
     $companyName = $request->getParam('name');
-    $companyPassword =  $request->getParam('password');
-    
+    $companyPassword =  sha1($request->getParam('password').$salt);
+
     $company = $companiesRepository->findOneBy(['name' => $companyName, 'password' => $companyPassword]);
 
     if(!$company){
