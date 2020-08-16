@@ -13,9 +13,7 @@ $app->group('/v1', function() {
     //rotas de empresa
     $this->group('/company', function(){
         $this->post('', 'App\v1\Controllers\CompanyController:createCompany');
-        $this->get('', 'App\v1\Controllers\CompanyController:viewInvoices');
-        //Validando se tem um integer no final da URL
-        $this->get('/{id:[0-9]+}/', 'App\v1\Controllers\CompanyController:viewCompany');
+        $this->get('/{id}', 'App\v1\Controllers\CompanyController:viewCompany');
     });
 
     //importar CSV

@@ -88,7 +88,7 @@ class CompanyController {
         }
 
         $data['msg'] = 'success';
-        $data['data'] = $company; 
+        $data['data'] = $company->getValues(); 
 
         $return = $response->withJson($data, 200)
             ->withHeader('Content-type', 'application/json');

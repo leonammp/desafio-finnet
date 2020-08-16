@@ -1,6 +1,6 @@
 <?php
 
-require './vendor/autoload.php';
+require "./vendor/autoload.php";
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
@@ -66,14 +66,14 @@ $isDevMode = true;
 /**
  * Diretório de Entidades e Metadata do Doctrine
  */
-$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src/Models/Entity"), $isDevMode);
+$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/../src/Models/Entity"), $isDevMode);
 
 /**
  * Array de configurações da conexão com o banco
  */
 $conn = array(
     'driver' => 'pdo_sqlite',
-    'path' => __DIR__ . '/db.sqlite',
+    'path' => __DIR__ . '/db/db.sqlite',
 );
 
 /**
@@ -91,7 +91,7 @@ $container['em'] = $entityManager;
  */
 $container['logger'] = function($container) {
     $logger = new Monolog\Logger('desafio-finnet');
-    $logfile = __DIR__ . '/log/desafio-finnet.log';
+    $logfile = __DIR__ . '/../log/desafio-finnet.log';
     $stream = new Monolog\Handler\StreamHandler($logfile, Monolog\Logger::DEBUG);
     $fingersCrossed = new Monolog\Handler\FingersCrossedHandler(
         $stream, Monolog\Logger::INFO);
