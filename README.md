@@ -56,7 +56,7 @@ docker run -d -p 8000:8000 <IMAGE ID>
 ```
 Pronto.
 
-### Istalação sem Docker 
+### Instalação sem Docker 
 Para instalar o sistema basta executar os seguintes comandos:
 ```bash
 #Baixar o projeto
